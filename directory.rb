@@ -8,7 +8,7 @@ def input_students
   #while the name is not empty, repeat this code
   while !name.empty? do
     students << {name: name}
-    puts "Now we have #{students.count} students"
+    puts "Now we have #{students.count} student#{students.count > 1 ? "s" : ""}"
     name = gets.chomp
   end
   input_cohorts(students)
@@ -59,12 +59,34 @@ def print(students)
   puts "\n"
 end
 
+def print_cohorts(students)
+  if students.length == 1
+    puts "#{students[0][:name].capitalize} is from the #{students[0][:cohort].capitalize} cohort."
+  else
+    cohorts = {}
+    students.map do |student|
+      if cohorts[student[:cohort]]
+        cohorts[student[:cohort]] << student[:name]
+      else
+        cohorts[student[:cohort]] = [student[:name]]
+      end
+    end
+    cohorts.each do |cohort, names|
+      last_name = names.slice(-1).capitalize
+      names_for_print = names[0..-2].join(", ").capitalize + " and #{last_name}"
+      puts "#{names_for_print} are from the #{cohort.capitalize} cohort."
+    end
+    puts "\n"
+  end
+end
+
 def print_footer(students)
-    puts "Overall, we have #{students.count} great student#{students.count > 1 ? "s" : ""}."
-    puts "\n\n"
+    puts "In total, we have #{students.count} great student#{students.count > 1 ? "s" : ""}."
+    puts "\n"
 end
 
 students = input_students
 print_header
 print(students)
+print_cohorts(students)
 print_footer(students)
