@@ -52,14 +52,20 @@ def print_header
 end
 
 def print(students)
-  students.each_with_index do |student, idx|
-    puts "#{idx + 1}. #{student[:name].capitalize}".ljust(15, ".") +
-         "#{student[:cohort].capitalize} cohort".rjust(10)
+  if students.length == 0
+    puts "There are currently no students."
+    return
+  else
+    students.each_with_index do |student, idx|
+      puts "#{idx + 1}. #{student[:name].capitalize}".ljust(15, ".") +
+           "#{student[:cohort].capitalize} cohort".rjust(10)
+    end
+    puts "\n"
   end
-  puts "\n"
 end
 
 def print_cohorts(students)
+  return if students.length == 0
   if students.length == 1
     puts "#{students[0][:name].capitalize} is from the #{students[0][:cohort].capitalize} cohort."
   else
@@ -81,6 +87,7 @@ def print_cohorts(students)
 end
 
 def print_footer(students)
+  return if students.length == 0
     puts "In total, we have #{students.count} great student#{students.count > 1 ? "s" : ""}."
     puts "\n"
 end
