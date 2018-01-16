@@ -11,6 +11,7 @@ end
 def print_menu
   puts "1. Input students"
   puts "2. Show the students"
+  puts "3. Save the list of students"
   puts "9. Exit"
 end
 
@@ -20,6 +21,8 @@ def process(selection)
     @students = input_students
   when "2"
     show_students
+  when "3"
+    save_students
   when "9"
     exit
   else
@@ -116,6 +119,16 @@ end
 def print_footer
   return if @students.length == 0
     puts "In total, we have #{@students.count} great student#{@students.count > 1 ? "s" : ""}."
+end
+
+def save_students
+  file = File.open("students.csv", "w")
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort]]
+    csv_line = student_data.join(",")
+    file.puts csv_line
+  end
+  file.close
 end
 
 interactive_menu
