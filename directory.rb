@@ -1,10 +1,19 @@
 COHORTS = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
 @students = []
 
+def try_load_students
+  ARGV.first ? filename = ARGV.first : return
+  if File.exists?(filename)
+    load_students(filename)
+  else
+    puts "I'm afraid that file does not exist. Please use menu option 4 to try again"
+  end
+end
+
 def interactive_menu
   loop do
     print_menu
-    process(gets.chomp)
+    process(STDIN.gets.chomp)
   end
 end
 
@@ -36,11 +45,11 @@ end
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
-  name = gets.chomp
+  name = STDIN.gets.chomp
   while !name.empty? do
     @students << {name: name}
     puts "Now we have #{@students.count} student#{@students.count > 1 ? "s" : ""}"
-    name = gets.chomp
+    name = STDIN.gets.chomp
   end
   input_cohorts
   input_student_details
@@ -51,7 +60,7 @@ def input_cohorts
     cohort = ""
     while !COHORTS.include?(cohort)
       puts "What cohort is #{student[:name]} from?"
-      cohort = gets.chomp.downcase.to_sym
+      cohort = STDIN.gets.chomp.downcase.to_sym
       if COHORTS.include?(cohort)
         student[:cohort] = cohort
         next
@@ -67,11 +76,11 @@ def input_student_details
   puts "Please provide a little more information:"
   @students.each do |student|
     puts "What is #{student[:name]}'s height in cm?"
-    student[:height] = gets.chomp.to_i
+    student[:height] = STDIN.gets.chomp.to_i
     puts "What is #{student[:name]}'s nationality?"
-    student[:nationality] = gets.chomp.to_sym
+    student[:nationality] = STDIN.gets.chomp.to_sym
     puts "What are #{student[:name]}'s hobbies? (please separate hobbies with commas)"
-    student[:hobbies] = gets.split(",").each { |hobby| hobby.strip!}
+    student[:hobbies] = STDIN.gets.split(",").each { |hobby| hobby.strip!}
   end
 end
 
@@ -134,8 +143,8 @@ def save_students
   file.close
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.chomp.split(",")
     @students << {name: name, cohort: cohort.to_sym}
@@ -143,4 +152,5 @@ def load_students
   file.close
 end
 
+try_load_students
 interactive_menu
