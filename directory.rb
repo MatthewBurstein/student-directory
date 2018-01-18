@@ -20,29 +20,22 @@ def print_menu
 end
 
 def process(selection)
+  menu_feedback(selection)
   case selection
   when "1"
-    menu_feedback(selection)
     @students = input_students_names
     input_cohorts
     input_students_details
   when "2"
-    menu_feedback(selection)
-    show_students
+    print_students
   when "3"
-    menu_feedback(selection)
     save_students
   when "4"
-    menu_feedback(selection)
     load_students
   when "5"
-    menu_feedback(selection)
     print_cohorts
   when "9"
-    menu_feedback(selection)
     exit
-  else
-    menu_feedback
   end
 end
 
@@ -114,11 +107,10 @@ end
 def print_students_list
   if @students.length == 0
     puts "There are currently no students."
-    return
   else
     @students.each_with_index do |student, idx|
-      puts "#{idx + 1}. #{student[:name].capitalize}".ljust(15, ".") +
-           "#{student[:cohort].capitalize} cohort".rjust(10)
+      print "#{idx + 1}. #{student[:name].capitalize}".ljust(15, ".")
+      puts "#{student[:cohort].capitalize} cohort".rjust(10)
     end
   end
 end
