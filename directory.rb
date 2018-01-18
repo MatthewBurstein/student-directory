@@ -1,15 +1,6 @@
 COHORTS = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
 @students = []
 
-def try_load_students
-  ARGV.first ? filename = ARGV.first : return
-  if File.exists?(filename)
-    load_students(filename)
-  else
-    puts "I'm afraid that file does not exist. Please use menu option 4 to try again"
-  end
-end
-
 def interactive_menu
   loop do
     print_menu
@@ -150,6 +141,15 @@ def load_students(filename = "students.csv")
     @students << {name: name, cohort: cohort.to_sym}
   end
   file.close
+end
+
+def try_load_students
+  filename = ARGV.first ? ARGV.first : 'students.csv'
+  if File.exists?(filename)
+    load_students(filename)
+  else
+    puts "I'm afraid that file does not exist. Please use menu option 4 to try again"
+  end
 end
 
 try_load_students
