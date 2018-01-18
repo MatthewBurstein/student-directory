@@ -19,21 +19,36 @@ end
 def process(selection)
   case selection
   when "1"
-    @students = input_students
+    menu_feedback(selection)
+    @students = input_students_names
+    input_cohorts
+    input_students_details
   when "2"
+    menu_feedback(selection)
     show_students
   when "3"
+    menu_feedback(selection)
     save_students
   when "4"
+    menu_feedback(selection)
     load_students
   when "9"
+    menu_feedback(selection)
     exit
+  else
+    menu_feedback
+  end
+end
+
+def menu_feedback(selection = false)
+  if selection
+    puts "You have chosen option #{selection}"
   else
     puts "Please choose a number from the menu"
   end
 end
 
-def input_students
+def input_students_names
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
   name = STDIN.gets.chomp
@@ -42,8 +57,6 @@ def input_students
     puts "Now we have #{@students.count} student#{@students.count > 1 ? "s" : ""}"
     name = STDIN.gets.chomp
   end
-  input_cohorts
-  input_student_details
 end
 
 def input_cohorts
@@ -65,7 +78,7 @@ def get_cohort(student)
   end
 end
 
-def input_student_details
+def input_students_details
   puts "Please provide the height, nationality and gender of each student"
   @students.each do |student|
     get_student_details(student)
