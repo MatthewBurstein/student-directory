@@ -1,3 +1,5 @@
+require 'csv'
+
 COHORTS = [:january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december]
 @students = []
 
@@ -13,6 +15,7 @@ def print_menu
   puts "2. Show the students"
   puts "3. Save the list of students"
   puts "4. Load the list of students from students.csv"
+  puts "5. Show the cohorts"
   puts "9. Exit"
 end
 
@@ -32,6 +35,9 @@ def process(selection)
   when "4"
     menu_feedback(selection)
     load_students
+  when "5"
+    menu_feedback(selection)
+    print_cohorts
   when "9"
     menu_feedback(selection)
     exit
@@ -88,13 +94,13 @@ end
 
 def get_student_details(student)
   attributes = [:height, :nationality, :gender]
-    attributes.each do |attribute|
-      puts "what is #{student[:name]}'s #{attribute}?'"
-      student[attribute] = STDIN.gets.chomp
+  attributes.each do |attribute|
+    puts "what is #{student[:name]}'s #{attribute}?'"
+    student[attribute] = STDIN.gets.chomp
   end
 end
 
-def show_students
+def print_students
   print_header
   print_students_list
   print_footer
@@ -119,23 +125,25 @@ end
 
 def print_cohorts
   return if @students.length == 0
-  if @students.length == 1
-    puts "#{@students[0][:name].capitalize} is from the #{@students[0][:cohort].capitalize} cohort."
-  else
-    cohorts = {}
-    @students.each do |student|
-      if cohorts[student[:cohort]]
-        cohorts[student[:cohort]] << student[:name]
-      else
-        cohorts[student[:cohort]] = [student[:name]]
-      end
-    end
-    cohorts.each do |cohort, names|
-      last_name = names.slice(-1).capitalize
-      names_for_print = names[0..-2].join(", ").capitalize + " and #{last_name}"
-      puts "#{names_for_print} are from the #{cohort.capitalize} cohort."
+  cohorts = sort_by_cohorts
+  cohorts.each do |cohort, names|
+    unless names.empty?
+      puts cohort.capitalize
+      names.each { |name| puts " * #{name.capitalize}"}
     end
   end
+end
+
+def sort_by_cohorts
+  cohorts = {}
+  @students.each do |student|
+    if cohorts[student[:cohort]]
+      cohorts[student[:cohort]] << student[:name]
+    else
+      cohorts[student[:cohort]] = [student[:name]]
+    end
+  end
+  cohorts
 end
 
 def print_footer
@@ -144,22 +152,20 @@ def print_footer
 end
 
 def save_students
-  file = File.open("students.csv", "w")
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+  CSV.open("students.csv", "w") do |csv|
+    @students.each do |student|
+    csv << [student[:name], student[:cohort]]
+    end
   end
-  file.close
 end
 
 def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-    name, cohort = line.chomp.split(",")
-    @students << {name: name, cohort: cohort.to_sym}
+  CSV.open(filename, "r") do |csv|
+    csv.each do |row|
+      name, cohort = row
+      @students << {name: name, cohort: cohort.to_sym}
+    end
   end
-  file.close
 end
 
 def try_load_students
