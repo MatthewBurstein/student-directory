@@ -48,30 +48,36 @@ end
 
 def input_cohorts
   @students.each do |student|
-    cohort = ""
-    while !COHORTS.include?(cohort)
-      puts "What cohort is #{student[:name]} from?"
-      cohort = STDIN.gets.chomp.downcase.to_sym
-      if COHORTS.include?(cohort)
-        student[:cohort] = cohort
-        next
-      else
-        puts "That is not a valid cohort."
-      end
+    get_cohort(student)
+  end
+end
+
+def get_cohort(student)
+  loop do
+    puts "What cohort is #{student[:name]} from?"
+    cohort = STDIN.gets.chomp.downcase.to_sym
+    if COHORTS.include?(cohort)
+      student[:cohort] = cohort
+      break
+    else
+      puts "That is not a valid cohort"
     end
   end
 end
 
-
 def input_student_details
-  puts "Please provide a little more information:"
+  puts "Please provide the height, nationality and gender of each student"
   @students.each do |student|
-    puts "What is #{student[:name]}'s height in cm?"
-    student[:height] = STDIN.gets.chomp.to_i
-    puts "What is #{student[:name]}'s nationality?"
-    student[:nationality] = STDIN.gets.chomp.to_sym
-    puts "What are #{student[:name]}'s hobbies? (please separate hobbies with commas)"
-    student[:hobbies] = STDIN.gets.split(",").each { |hobby| hobby.strip!}
+    get_student_details(student)
+  end
+end
+
+
+def get_student_details(student)
+  attributes = [:height, :nationality, :gender]
+    attributes.each do |attribute|
+      puts "what is #{student[:name]}'s #{attribute}?'"
+      student[attribute] = STDIN.gets.chomp
   end
 end
 
